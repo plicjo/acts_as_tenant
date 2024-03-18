@@ -108,7 +108,7 @@ module ActsAsTenant
         fkey = valid_options[:foreign_key] || ActsAsTenant.fkey
         pkey = valid_options[:primary_key] || ActsAsTenant.pkey
         polymorphic_type = valid_options[:foreign_type] || ActsAsTenant.polymorphic_type
-        belongs_to tenant, valid_options
+        belongs_to tenant, **valid_options
 
         default_scope lambda {
           if ActsAsTenant.configuration.require_tenant && ActsAsTenant.current_tenant.nil? && !ActsAsTenant.unscoped?
@@ -212,13 +212,13 @@ module ActsAsTenant
               if instance.new_record?
                 unless self.class.where(fkey.to_sym => [nil, instance[fkey]],
                                         field.to_sym => instance[field]).empty?
-                  errors.add(field, 'has already been taken') 
+                  errors.add(field, 'has already been taken')
                 end
               else
                 unless self.class.where(fkey.to_sym => [nil, instance[fkey]],
                                         field.to_sym => instance[field])
                                  .where.not(:id => instance.id).empty?
-                  errors.add(field, 'has already been taken') 
+                  errors.add(field, 'has already been taken')
                 end
 
               end
